@@ -63,8 +63,10 @@ if(!config_nh_.getParam("communication_protocol", comm_protocol_)) {
 
   hardware_interface::ActuatorHandle position_handle(state_handle, &position_cmd_);
   api.registerHandle(position_handle);
+
   hardware_interface::ActuatorHandle velocity_handle(state_handle, &velocity_cmd_);
   avi.registerHandle(velocity_handle);
+  //ROS_INFO("Valor %d", velocity_cmd_);
   hardware_interface::ActuatorHandle effort_handle(state_handle, &torque_cmd_);
   aei.registerHandle(effort_handle);
 
@@ -449,7 +451,7 @@ bool Epos::init() {
 	 .param("p", p)
 	 .param("i", i)
 	 .all_or_none(current_regulator_gain))
-	return false;
+    return false;
       if(current_regulator_gain){
 	VCS(SetCurrentRegulatorGain, p, i);
       }
@@ -605,7 +607,9 @@ void Epos::write() {
   if(operation_mode_ == PROFILE_VELOCITY_MODE) {
     if(isnan(velocity_cmd_))
       return;
+    //ROS_INFO("valor %d", velocity_cmd_);
     int cmd = (int)velocity_cmd_;
+    ROS_INFO("valor %d", cmd);
     if(max_profile_velocity_ >= 0) {
       if(cmd < -max_profile_velocity_)
 	cmd = -max_profile_velocity_;
@@ -623,7 +627,21 @@ void Epos::write() {
   else if(operation_mode_ == PROFILE_POSITION_MODE) {
     if(isnan(position_cmd_))
       return;
-    VCS_MoveToPosition(node_handle_->device_handle->ptr, node_handle_->node_id, (int)position_cmd_, true, true, &error_code);
+    ROS_INFO("valor anterior %d", position_cmd_);
+    long int cmd = (long int)position_cmd_;
+    ROS_INFO("valor %d %d", position_cmd_, cmd);
+    //ROS_INFO("Move to position %d", position_cmd_);
+
+
+    long int position_cmd_int;
+    //position_cmd_int = (long int) position_cmd_;
+    //ROS_INFO("Move to position long int %ld", position_cmd_int);
+    //position_cmd_int =position_cmd_int /  10000;
+    //ROS_INFO("Move to position %ld", position_cmd_int);
+
+    //bool ret_pos = VCS_MoveToPosition(node_handle_->device_handle->ptr, node_handle_->node_id, (int)position_cmd_, true, true, &error_code);
+    bool ret_pos = VCS_MoveToPosition(node_handle_->device_handle->ptr, node_handle_->node_id, position_cmd_, false, true, &error_code);
+    //ROS_INFO("Move to position - return %d  --  error code %d", ret_pos, error_code);
   }
   else if(operation_mode_ == CURRENT_MODE) {
     if(isnan(torque_cmd_))

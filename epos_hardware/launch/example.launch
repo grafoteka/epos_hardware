@@ -4,12 +4,21 @@
     <rosparam command="load" file="$(find epos_hardware)/launch/example.yaml" />
   </node>
 
+  <!-- Control en velocidad -->
+  <!-- <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" args="joint_state_controller velocity_controller"/> -->
+
+  <!-- Control en posicion -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-	output="screen" args="joint_state_controller velocity_controller"/>
+        output="screen" args="joint_state_controller position_controller"/>
+
   <param name="velocity_controller/type" value="velocity_controllers/JointVelocityController" />
   <param name="velocity_controller/joint" value="test_joint" />
-  <param name="position_controller/type" value="position_controllers/JointPositionController" />
+  <param name="position_controller/type" value="velocity_controllers/JointPositionController" />
   <param name="position_controller/joint" value="test_joint" />
   <param name="joint_state_controller/type" value="joint_state_controller/JointStateController" />
   <param name="joint_state_controller/publish_rate" value="50" />
+  <param name="position_controller/pid/p" value="1.0" />
+  <param name="position_controller/pid/i" value="0.0" />
+  <param name="position_controller/pid/d" value="0.0" />
 </launch>

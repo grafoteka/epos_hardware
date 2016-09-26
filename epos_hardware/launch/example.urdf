@@ -15,6 +15,10 @@
   <joint name="test_joint" type="revolute">
     <parent link="link1"/>
     <child link="link2"/>
+    <limit lower="0.01" upper="3.14159" effort="30.0" velocity="1.0">
+    ## effort in  (N-m )
+    ## velocity in rad/s
+    </limit>
   </joint>
   <transmission name="test_joint_trans">
     <type>transmission_interface/SimpleTransmission</type>
