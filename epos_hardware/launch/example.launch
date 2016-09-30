@@ -20,7 +20,10 @@
 
   <param name="joint_state_controller/type" value="joint_state_controller/JointStateController" />
   <param name="joint_state_controller/publish_rate" value="50" />
-  <!-- <param name="position_controller/pid/p" value="0.10" />
-  <param name="position_controller/pid/i" value="0.0" />
-  <param name="position_controller/pid/d" value="0.0" /> -->
+
+  <!-- Parametros PID para el control en velocidad -->
+  <!-- <param name="position_controller/pid/p" value="0.10" /> -->
+  <!-- <param name="position_controller/pid/i" value="0.0" /> -->
+  <!-- <param name="position_controller/pid/d" value="0.0" /> -->
+
 </launch>
