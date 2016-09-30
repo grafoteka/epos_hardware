@@ -6,6 +6,7 @@ namespace epos_hardware {
 EposHardware::EposHardware(ros::NodeHandle& nh, ros::NodeHandle& pnh, const std::vector<std::string>& motor_names)
   : epos_manager_(asi, avi, api, aei, nh, pnh, motor_names) {
 
+
   // TODO throw exception or something
   try {
     transmission_loader.reset(new transmission_interface::TransmissionInterfaceLoader(this, &robot_transmissions));
@@ -78,6 +79,7 @@ EposHardware::EposHardware(ros::NodeHandle& nh, ros::NodeHandle& pnh, const std:
 
 bool EposHardware::init() {
   return epos_manager_.init();
+
 }
 
 void EposHardware::update_diagnostics() {
@@ -90,13 +92,20 @@ void EposHardware::read() {
     robot_transmissions.get<transmission_interface::ActuatorToJointStateInterface>()->propagate();
 }
 
-void EposHardware::write() {
+void EposHardware::write()
+{
   if(robot_transmissions.get<transmission_interface::JointToActuatorVelocityInterface>())
-    robot_transmissions.get<transmission_interface::JointToActuatorVelocityInterface>()->propagate();
+  {
+      robot_transmissions.get<transmission_interface::JointToActuatorVelocityInterface>()->propagate();
+  }
   if(robot_transmissions.get<transmission_interface::JointToActuatorPositionInterface>())
-    robot_transmissions.get<transmission_interface::JointToActuatorPositionInterface>()->propagate();
+  {
+     robot_transmissions.get<transmission_interface::JointToActuatorPositionInterface>()->propagate();
+  }
   if(robot_transmissions.get<transmission_interface::JointToActuatorEffortInterface>())
-    robot_transmissions.get<transmission_interface::JointToActuatorEffortInterface>()->propagate();
+  {
+     robot_transmissions.get<transmission_interface::JointToActuatorEffortInterface>()->propagate();
+  }
   epos_manager_.write();
 }
 

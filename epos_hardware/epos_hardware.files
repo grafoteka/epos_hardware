@@ -1,0 +1,17 @@
+include/epos_hardware/epos.h
+include/epos_hardware/epos_hardware.h
+include/epos_hardware/epos_manager.h
+include/epos_hardware/utils.h
+launch/example.launch
+launch/example.urdf
+launch/example.yaml
+src/nodes/epos_hardware_node.cpp
+src/tools/get_state.cpp
+src/tools/list_devices.cpp
+src/util/epos.cpp
+src/util/epos_hardware.cpp
+src/util/epos_manager.cpp
+src/util/utils.cpp
+CHANGELOG.rst
+CMakeLists.txt
+package.xml

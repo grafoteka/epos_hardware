@@ -1,5 +1,6 @@
 #include "epos_hardware/epos.h"
 #include <boost/foreach.hpp>
+#include <string>
 
 namespace epos_hardware {
 
@@ -17,6 +18,8 @@ Epos::Epos(const std::string& name,
 
   valid_ = true;
   if(!config_nh_.getParam("actuator_name", actuator_name_)) {
+      int longitud = actuator_name_.size();
+    ROS_INFO("%d", longitud);
     ROS_ERROR("You must specify an actuator name");
     valid_ = false;
   }
@@ -62,11 +65,11 @@ if(!config_nh_.getParam("communication_protocol", comm_protocol_)) {
   asi.registerHandle(state_handle);
 
   hardware_interface::ActuatorHandle position_handle(state_handle, &position_cmd_);
+  ROS_INFO("David caca Posicion cmd %f", position_cmd_);
   api.registerHandle(position_handle);
-
   hardware_interface::ActuatorHandle velocity_handle(state_handle, &velocity_cmd_);
+  ROS_INFO("David caca Vel cmd %f", velocity_cmd_);
   avi.registerHandle(velocity_handle);
-  //ROS_INFO("Valor %d", velocity_cmd_);
   hardware_interface::ActuatorHandle effort_handle(state_handle, &torque_cmd_);
   aei.registerHandle(effort_handle);
 
@@ -596,13 +599,11 @@ void Epos::read() {
   velocity_ = velocity_raw;
   current_ = current_raw  / 1000.0; // mA -> A
   effort_ = currentToTorque(current_);
-
 }
 
 void Epos::write() {
   if(!has_init_)
     return;
-
   unsigned int error_code;
   if(operation_mode_ == PROFILE_VELOCITY_MODE) {
     if(isnan(velocity_cmd_))
@@ -626,24 +627,28 @@ void Epos::write() {
   }
   else if(operation_mode_ == PROFILE_POSITION_MODE) {
     if(isnan(position_cmd_))
+    {
+      ROS_INFO("valor nan anterior %f", position_cmd_);
       return;
-    ROS_INFO("valor anterior %d", position_cmd_);
-    long int cmd = (long int)position_cmd_;
-    ROS_INFO("valor %d %d", position_cmd_, cmd);
+    }
+     //ROS_INFO("valor anterior %f", position_cmd_);
+     //long int cmd = (long int)position_cmd_;
+     //ROS_INFO("valor %d %d", position_cmd_, cmd);
     //ROS_INFO("Move to position %d", position_cmd_);
 
-
     long int position_cmd_int;
-    //position_cmd_int = (long int) position_cmd_;
+    position_cmd_int = (long int) position_cmd_;
     //ROS_INFO("Move to position long int %ld", position_cmd_int);
     //position_cmd_int =position_cmd_int /  10000;
-    //ROS_INFO("Move to position %ld", position_cmd_int);
+    ROS_INFO("Move to position %ld", position_cmd_int);
 
     //bool ret_pos = VCS_MoveToPosition(node_handle_->device_handle->ptr, node_handle_->node_id, (int)position_cmd_, true, true, &error_code);
-    bool ret_pos = VCS_MoveToPosition(node_handle_->device_handle->ptr, node_handle_->node_id, position_cmd_, false, true, &error_code);
+    bool ret_pos = VCS_MoveToPosition(node_handle_->device_handle->ptr, node_handle_->node_id, position_cmd_int, true, true, &error_code);
     //ROS_INFO("Move to position - return %d  --  error code %d", ret_pos, error_code);
+
   }
   else if(operation_mode_ == CURRENT_MODE) {
+    ROS_INFO("current");
     if(isnan(torque_cmd_))
       return;
     VCS_SetCurrentMust(node_handle_->device_handle->ptr, node_handle_->node_id, (int)torqueToCurrent(torque_cmd_), &error_code);

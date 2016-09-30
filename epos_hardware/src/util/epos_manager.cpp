@@ -15,6 +15,11 @@ EposManager::EposManager(hardware_interface::ActuatorStateInterface& asi,
     ros::NodeHandle motor_config_nh(pnh, motor_name);
     boost::shared_ptr<Epos> motor(new Epos(motor_name, nh, motor_config_nh, &epos_factory, *asi_, *avi_, *api_, *aei_));
     motors_.push_back(motor);
+    ROS_INFO("Aqui");
+    for (int i = 0; i < motor_names.size(); i++) {
+      ROS_INFO("%s", motor_names[i].c_str());
+    }
+
   }
 }
 
